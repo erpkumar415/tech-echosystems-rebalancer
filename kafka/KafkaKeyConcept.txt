@@ -1,0 +1,341 @@
+###############################################
+KAFKA -Concept and Architechture
+
+Please refer below link for query on kafka
+https://cwiki.apache.org/confluence/display/kafka/faq
+
+https://www.learningjournal.guru/courses/kafka/kafka-foundation-training/consumer-groups/
+
+
+###############################################
+Points:
+1.Topic is a lebeling to keep messages in Server.
+ Topic can have 1000 of partitions on only Single Server[Broker].
+However for better performace of clusters systems, Horizantal scaling is recomendend for partitions.
+That means ,  a server should have single partition for given Topic for highly scaling of systems.
+
+2.A Topic hosting server responsible for recieve messages from Producer/Publisher Client.
+ A Topic hosting server responsible to repospond consumers client who consume messages .So therefore Topic hosting server
+ called as message broker server.
+ 
+3.Broker server recieve accept message from producer and set Offset and save/commit message on disk for given partition
+for given specific Topic. Offset is exists only in partition for given topic. 
+
+4.ordering of messages:
+Producer sent message to Topic . But by default round robin algo method messages recieved at 
+various partitions in topic. 
+So if we targeting some specific messages from producers then we can use Optional key in message for some ordering.
+Using messages key we can set a producer to sent message to only marked/desired partition number only.
+
+If we want to read/consume Topic all  messages in Order only  then put keep one Partition for Topic.
+
+
+5. Consumer and Group Consumer:
+A Consumer read message from Topic Partition in Broker using continuous poll opteration. It keep which 
+messages with offsets consumed and last read message offsets stored in zookeeper with help of 
+kafka cluster coordinator/controller. And Offsets committed values stored on Zookeper in Brokers Cluster.
+If a consumer go down and up then it read last processed messages offsets from zookeeper.
+
+Group Consumer have multiples Consumers and helps to consume messages parallaly without any conflicts in reading from 
+multiples partitions of Topic .
+For given Group Consumer, Two Consumers never read message from same partition.
+If there is 6 partitions for topic and Group Consumer have 3 Consumer 
+then each Consumer will consume two partitions only.
+
+If there is 6 partitions for topic and Group Consumer have 7 Consumers 
+then each Consumer will consume one partition only so that one Consumers remains ideal or not in  used as 6  Consumers will active here.
+
+SO Group Consumer can not have total active  Consumers numbers  more than  total partition numbers for given topic.
+
+Two different Group 's Consumers will read all messages saparetly independently from Topic.
+So same message processed in Two different Group's Consumers. But same message cannot be read by two Consumers
+in same given Group Consumer.
+ 
+ Why does my consumer never get any data?
+ By default, when a consumer is started for the very first time, it ignores all existing data in a topic 
+ and will only consume new data coming in after the consumer is started. If this is the case, try sending 
+ some more data after the consumer is started. Alternatively, you can configure the consumer 
+ by setting auto.offset.reset to "earliest" for the new consumer in 0.9 
+ and "smallest" for the old consumer.
+ 
+ Should I choose multiple group ids or a single one for the consumers?
+If all consumers use the same group id, messages in a topic are distributed among those consumers.
+ In other words, each consumer will get a non-overlapping subset of the messages. 
+ Having more consumers in the same group increases the degree of parallelism and the overall throughput 
+ of consumption. See the next question for the choice of the number of consumer instances.
+ On the other hand, if each consumer is in its own group, each consumer will get a full copy of all messages.
+ 
+ Why some of the consumers in a consumer group never receive any message?
+Currently, a topic partition is the smallest unit that we distribute messages among consumers in the 
+same consumer group. So, if the number of consumers is larger than the total number of partitions in 
+a Kafka cluster (across all brokers), some consumers will never get any data. The solution is to
+ increase the number of partitions on the broker.
+
+Why are there many rebalances in my consumer log?
+A typical reason for many rebalances is the consumer side GC. If so, you will see Zookeeper session expirations
+ in the consumer log (grep for Expired). Occasional rebalances are fine. 
+ Too many rebalances can slow down the consumption and one will need to tune the java GC setting.
+
+ 
+In the beginning the two scenarios are described:
+
+If all the consumer instances have the same consumer group, then this works just like a traditional queue 
+balancing load over the consumers.
+
+If all the consumer instances have different consumer groups, then this works like publish-subscribe and all messages
+ are broadcast to all consumers.
+ 
+ 
+
+
+6.broker-list & bootstrap-servers:
+broker-list--:
+	-a full list of servers, if any missing producer may not work
+	-related to producer commands
+	 bootstrap-servers--:
+	 -one is enough to discover all others
+	-related to consumer commands
+	-Zookeeper involved
+
+
+7.  KAFKA_ADVERTISED_LISTENERS vs KAFKA_LISTENERS
+KAFKA_ADVERTISED_LISTENERS: ---Address given Kafka broker in cluster where any client [kafka producer/consumer] coonect 
+from out side kafka cluster
+
+example--
+KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://server_hostname:9095
+
+Here server_hostname stand for hostname machine where Kafka node / service Installed.
+
+More check-> KAFKA_LISTENERS
+KAFKA_LISTENERS is what the broker will use to create server sockets.
+
+KAFKA_ADVERTISED_LISTENERS is what clients will use to connect to the brokers. or Listeners to publish to ZooKeeper for clients to use,
+
+
+In IaaS environments, this may need to be different from the interface to which the broker binds.
+ If this is not set, the value for KAFKA_LISTENERS will be used.
+
+8.  bootstrap-server  :Used to object to hold list of Broker_IP:Port while client connect to Kafka Server. 
+Broker_IP is not KAFKA_ADVERTISED_LISTENERS Address details .
+
+
+9. Replication Factior : No of copy of Topic Partition for backup in cluster. 
+If replication factor is 3 then no of copy for given partition are 3 [one  partition which 
+act as leader and remaining  other two are followers].The  two are followers gets always in sync with leader with technic in
+
+Default Replication Factior is 3 if don't pass it in param
+
+
+10. Partition :A logical Topic can be divided in to multiple logical unique queue called partition 
+and each partition maintained messages indexes wise where first message index is at 0 position and so on.
+
+Each partition maps to a directory in the file system in the broker. Within that log directory, there will be two files 
+(one for the index and another for the actual data) per log segment. Currently, in Kafka, each broker opens a file handle 
+of both the index and the data file of every log segment. So, the more partitions, the higher that one needs to configure
+ the open file handle limit in the underlying operating system. This is mostly just a configuration issue. 
+We have seen production Kafka clusters running with more than 30 thousand open file handles per broker.
+
+
+Kafka only provides a total order over messages within a partition, not between different partitions in a topic.
+
+There can multiple partitions for given top on single Node Kafka broker.
+Suppose We have only one Broker in kafka system then there can be any number of partitions for given topic.
+i.e. there are no limitation of number of partitions for given  topic for given single Kafka Node or server.
+
+Topic partitions basically for parallel operations in kafka for given topic.
+What is important to understand is that a partition is actually the unit of parallelism for Kafka’s producers and consumers.
+
+ On the producer side, the partitions allow writing messages in parallel.
+ If a message is published with a key, then, by default,
+ the producer will hash the given key to determine the destination partition. 
+ This provides a guarantee that all messages with the same key will be sent to the same partition. 
+ In addition, a consumer will have the guarantee of getting messages delivered in order for that partition.
+
+ On the consumer side, the number of partitions for a topic bounds the maximum number
+ of active consumers within a consumer group. A consumer group is the mechanism provided by Kafka 
+ to group multiple consumer clients, into one logical group, in order to load balance the consumption of partitions. 
+ Kafka provides the guarantee that a topic-partition is assigned to only one consumer within a group.
+
+How many topics can I have?
+Unlike many messaging systems Kafka topics are meant to scale up arbitrarily. 
+Hence we encourage fewer large topics rather than many small topics. 
+So for example if we were storing notifications for users we would encourage a 
+design with a single notifications topic partitioned by user id rather than a separate topic per user.
+
+The actual scalability is for the most part determined by the number of total partitions across all topics not the number 
+of topics itself (see the question below for details).
+
+How do I choose the number of partitions for a topic?
+
+Here is a more complete list of tradeoffs to consider:
+
+-A partition is basically a directory of log files
+-Each partition must fit entirely on one machine:
+	So if you have only one partition in your topic you cannot scale your write rate or retention beyond the capability of 
+	a single machine. If you have 1000 partitions you could potentially use 1000 machines.
+-Each partition is totally ordered. If you want a total order over all writes you probably want to have just one partition.
+-Each partition is not consumed by more than one consumer thread/process in each consumer group.
+ This allows to have each process consume in a single threaded fashion to guarantee ordering to the 
+ consumer within the partition (if we split up a partition of ordered messages and handed them out to multiple 
+ consumers even though the messages were stored in order they would be processed out of order at times).
+-Many partitions can be consumed by a single process, though. So you can have 1000 partitions all consumed by a single process.
+-Another way to say the above is that the partition count is a bound on the maximum consumer parallelism.
+-More partitions will mean more files and hence can lead to smaller writes if you don't have enough memory to properly buffer the writes and coalesce them into larger writes
+-Each partition corresponds to several znodes in zookeeper. Zookeeper keeps everything in memory so this can eventually get out of hand.
+-More partitions means longer leader fail-over time. Each partition can be handled quickly (milliseconds) but with thousands of partitions this can add up.
+-When we checkpoint the consumer position we store one offset per partition so the more partitions the more expensive the position checkpoint is.
+-It is possible to later expand the number of partitions BUT when we do so we do not attempt to reorganize the data in the topic. So if you are depending on key-based semantic partitioning in your processing you will have to manually copy data from the old low partition topic to a new higher partition topic if you later need to expand.
+
+
+By having a notion of parallelism—the partition—within the topics, Kafka is able to provide both ordering guarantees and 
+load balancing over a pool of consumer processes. This is achieved by assigning the partitions in the topic to the consumers 
+in the consumer group so that each partition is consumed by exactly one consumer in the group. By doing this we ensure
+ that the consumer is the only reader of that partition and consumes the data in order. Since there are many partitions 
+ this still balances the load over many consumer instances. Note however that there cannot be more consumer instances 
+ than partitions.
+
+11. In-Sync Replica:
+Time to address; what is the ISR and what is it for?
+
+What is the ISR or In-Sync Replicas?
+The ISR is simply all the replicas of a partition that are "in-sync" with the leader. 
+The definition of "in-sync" depends on the topic configuration, but by default, it means that a replica is or has been 
+fully caught up with the leader in the last 10 seconds. 
+The setting for this time period is: replica.lag.time.max.ms and has a server default 
+which can be overridden on a per topic basis.
+
+12.  Rebalancing :
+
+ Rebalancing is the process where a group of consumer instances (belonging to the same group) co-ordinate
+ to own a mutually exclusive set of partitions of topics that the group is subscribed to. 
+ At the end of a successful rebalance operation for a consumer group, every partition for all subscribed topics 
+ will be owned by a single consumer instance within the group. The way rebalancing works is as follows.
+ Every broker is elected as the coordinator for a subset of the consumer groups. The co-ordinator broker for
+ a group is responsible for orchestrating a rebalance operation on consumer group membership changes or 
+ partition changes for the subscribed topics. It is also responsible for communicating the resulting partition
+ ownership configuration to all consumers of the group undergoing a rebalance operation.
+
+A Rebalance happens when:
+
+--a consumer JOINS the group
+--a consumer SHUTS DOWN cleanly
+--a consumer is considered DEAD by the group coordinator. This may happen after a crash 
+or when the consumer is busy with a long-running processing, which means that no heartbeats has been sent 
+in the meanwhile by the consumer to the group coordinator within the configured session interval
+--new partitions are added
+--If you subscribe to a topic that is not created yet, a rebalance will be triggered after the topic is created. 
+ Same, if a topic you subscribed to gets deleted.
+--Application crashed
+--Scaling Up and Down
+
+13.Group Co-ordinator  :
+A Group Coordinator - A broker is designated as a group coordinator and it maintains a list of active consumers.
+Being a group coordinator (one of the brokers in the cluster) and
+ a group leader (the first consumer that joins a group) designated for a consumer group.
+Group Co-ordinator  is  one of Broker node from kafka cluster for given consumer group.
+Consumer Group Co-ordinator is nothing but one of brokers which receives heartbeats(or polling for message) from all consumers
+ of a consumer group. In earlier versions metadata was stored on Zookeeper but post V8, it stores on brokers.
+ Each Consumer Group can sync up with one of the brokers that will take on the role of Coordinator for that group.
+ While all the decision making is still down in the application nodes, the Coordinator can fulfil a JoinGroup request
+ and supply metadata about the Consumer Group, like assignments and offsets. This Coordinator node is also responsible 
+ for the heartbeat timer mentioned above, so if the Consumer Group application node that is leading group decisions 
+ disappears, the Coordinator could kick everyone out and essentially require the Consumer Group to be reformed by the 
+ remaining nodes. An important part of Consumer Group behaviour, then, is electing leader nodes and working with the 
+ Coordinator to read and write metadata about assignments and partitions.
+
+ A Group Coordinator is one of the brokers responsible to communicate with consumers to achieve rebalances between
+ consumers.In earlier version Zookeeper stored metadata details but the latest version, it stores on brokers. 
+ The consumer coordinators receive heartbeat and polling from all consumers of the consumer groups so be aware
+ of each consumer's heartbeat and manager their offset on partitions.
+
+ The group coordinator is nothing but one of the brokers which receives heartbeats (or polling for messages)
+ from all consumers of a given consumer group. Every consumer group has a group coordinator [one of Broker node from kafka cluster ]. 
+ If a consumer stops sending heartbeats, the coordinator will trigger a rebalance.
+ 
+ A Group Coordinator - A broker is designated as a group coordinator and it maintains a list of active consumers.
+ 
+Group Leader: One of a consumer Group work as group leader which is chosen by the Group coordinator and 
+will responsible for making partition assignment decision on behalf of all consumers in a group.
+Every consumer group has a Group Leader. 
+If consumer stops sending heartbeats ,coordinator will trigger rebalance.
+
+When a consumer wants to join a consumer group, it sends a JoinGroup request to the group coordinator.
+ The first consumer to join the group becomes the group leader.
+ The leader receives a list of all consumers  in the group from the group coordinator (this will 
+ include all consumers that sent a heartbeat recently 
+ and are therefore considered alive) and it is responsible for assigning a subset of partitions to each consumer. 
+ It uses an implementation of the PartitionAssignor interface to decide which partitions should be handled by which consumer.
+
+What is the difference in Kafka between a Consumer Group Coordinator and a Consumer Group Leader?
+The consumer group coordinator is one of the brokers while the group leader is one of the consumer in a consumer group.
+
+Let us summarize it quickly>>>>>>>>
+
+Consumer Groups –They are used to read and process data in parallel.
+Partitions are not shared - To protect duplicate reads in a group, Kafka does not allow more than one Consumers to 
+read data from a single partition at the same time.
+A Group Coordinator - A broker is designated as a group coordinator and it maintains a list of active consumers.
+Rebalance - Every time the list of active consumers is modified, the coordinator orders a rebalance activity to the 
+group leader.
+The Group leader - executes a rebalance activity.
+Rebalance activity is nothing but assigning partitions to individual consumers.
+ 
+
+	>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ Query:
+ 1.What If a consumer go down and up then how consumer read last processed messages offsets from Topic of Broker?
+ 2.What if a consumer go down in Consumer Group ? How messages will be consumed from partition whose 
+ mapped active consumer from group goes down?
+ 3. What if topic partition increased for given  Consumer Group?
+ 4. What are Sync and ASync Commit ?
+ 5. What are Rebalancing of Partition and Consumer for given Group?
+ 
+  6. When we opt for kafka Broker ?
+  7.  kafka Broker and Rabbit MQ ?Which one good and why?
+  8.  kafka Broker and Solace ?Which one good and why?
+  
+  9. How Producer will connect to Broker to push message.
+  
+  10. Suppose we want to sent all related some Source specific message to  known given  partition . How to do it.
+   
+  11. what is role of zookeeper in kafka? 
+  12. what is role of Group Co ordinator in kafka? 
+   
+  13. what is role of Heart Beat in kafka? 
+  14. what is role of kafka advertised listeners ? 
+  15. what is role of kafka bootstrap servers ? 
+  16. what is role of kafka broker-list ?
+  17. What is Difference between broker-list and bootstrap servers?
+	  broker-list--:
+	-a full list of servers, if any missing producer may not work
+	-related to producer commands
+	 bootstrap-servers--:
+	 -one is enough to discover all others
+	-related to consumer commands
+	-Zookeeper involved
+  18. How to replace a failed broker?  
+  When a broker fails, Kafka doesn't automatically re-replicate the data on the failed broker to other brokers. 
+  This is because in the common case, one brings down a broker to apply code or config changes, and will 
+  bring up the broker quickly afterward. Re-replicating the data in this case will be wasteful.
+  In the rarer case that a broker fails completely, one will need to bring up another broker with the 
+  same broker id on a new server. 
+  The new broker will automatically replicate the missing data.
+  19.Can I add new brokers dynamically to a cluster?  
+  Yes, new brokers can be added online to a cluster. Those new brokers won't have any data initially until either some
+  new topics are created or some replicas are moved to 
+  them using the partition reassignment tool. 
+  
+  19.  Explain - More Partitions Requires More Open File Handles
+Each partition maps to a directory in the file system in the broker. Within that log directory, there will be two files 
+(one for the index and another for the actual data) per log segment. Currently, in Kafka, each broker opens a file handle 
+of both the index and the data file of every log segment. So, the more partitions, the higher that one needs to configure
+ the open file handle limit in the underlying operating system. This is mostly just a configuration issue. 
+We have seen production Kafka clusters running with more than 30 thousand open file handles per broker.
+https://www.youtube.com/watch?v=X40EozwK75s
+
+  20 In Apache Kafka why can't there be more consumer instances than partitions?
+  It is important to recall that Kafka keeps one offset per [consumer-group, topic, partition]. That is the reason.
+  
+21.What is the difference in Kafka between a Consumer Group Coordinator and a Consumer Group Leader?
+The consumer group coordinator is one of the brokers while the group leader is one of the consumer in a consumer group.
