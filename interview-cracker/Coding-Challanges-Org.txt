@@ -1,0 +1,76 @@
+Nagarro Interview ---- Coding Test Online :
+Three Problems in 90 min
+1.We have variable declarations naming conventions for two Languages c++ and Java.
+Suppose for 'Employe Department Details' naming variable name 
+In java is   'employeDepartmentDetails'
+In c++ is 'employe_department_details'.
+Please add lines in method as below which will convert variable name based on language.
+
+String covertLanguageVarible(String NameVaribleInput){
+//lines in method which will convert variable name based on language.
+return NameVaribleInput;
+}
+
+Test Case 1:
+Input :employeDepartmentDetails
+OutPut:employe_department_details
+
+Test Case 2:
+Input :jai_mata_di
+OutPut:jaiMataDi
+
+
+2.Please add lines in method as below which will display frequency of all characters in string typr input.
+
+String covertFreqString(String dataItemInput){
+//lines in method which will display frequency of all characters in string typr input.
+return dataItemInput;
+}
+
+Test Case 1:
+Input :amnqmamananqm
+OutPut:a4m4n3q2
+
+Test Case 2:
+Input :bdbcdbcbc
+OutPut:b4c3d2
+
+3.Soppose we have two inputs for method :1)input1 int type 2) input2 int array type.
+Please add lines in method as below which will display element with frequency  in array input2 if frquency of a 
+element from array input2 is greater than half of input1 otherwise display -1.
+
+int freqStringDataInput(int input1,int input2){
+//lines in method which will display frequency of all characters in string typr input.
+return -1;
+}
+
+Test Case 1:
+->Input:
+Input1 :7
+Input2 :{2,8,2,3,2,2,2}
+->OutPut:2 5
+
+Explanations array's element 2's frequency is 5 . Half of input1 is 7/2=3.5.
+And therefore, frequency value 5 is greater than Half of input1 [3.5] and therefore output is 2 5
+
+
+Test Case 2:
+->Input:
+Input1 :8
+Input2 :{2,8,2,3,2,5,4,6}
+->OutPut:-1
+Explanations array's element 2's frequency is 3 . Half of input1 is 4.
+And therefore, frequency value not greater than Half of input1 and therefore output is -1
+
+
+Test Case 3:
+->Input:
+Input1 :8
+Input2 :{2,9,2,3,2,5,4,2}
+->OutPut:-1
+
+Explanations array's element 2's frequency is 4 . Half of input1 is 4.
+And therefore, frequency value not greater than Half of input1 and therefore output is -1
+
+
+---------------------------------------------------------------------------------------------
