@@ -1,0 +1,174 @@
+Core Java 
+1. What are feature of Java 8 and what changes in HashMap and Memory 
+2. Design Pattern -which used --and implement Builder Design Pattern
+
+
+3.
+List Operations using Java 8 Stream
+1.Filter out list of customers based on name start with 's'  
+2.Then Filtered out list of customers -sort it with all name with reversing or asesnding sorting
+
+Backend :
+
+1.Implement Rest API using Spring Boot and DB integration, fetch data from DB Customer table  and Inegrate with Angular
+2. SQL Query performance -how to analyse it
+
+
+Angular 
+1. Inegrate Service API with Angular 
+2. What is diffence between Promise and Obsevable 
+
+
+
+
+-----------------------------------------------
+
+
+List Operations using Java 8 Stream
+
+
+
+List customerList
+
+Customer {
+id
+name
+sal
+}
+
+
+List<String> customerNameList=customerList.stream().filter(c-> c.getName().startWith("s")).map(n->n.getName()).collect.(Collectors.tolist());
+
+Collectons.sort(customerNameList,new Comparator(){
+
+public int compare(Object e1,Object e2){
+
+(String)e1.compareTo((String)e2);
+}
+
+
+});
+
+
+Vehicle {
+private String cheessesId;
+private String vehNum;
+private String make;
+private String model;
+
+Vehicle(String cheessesId,String vehNum){
+this.cheessesId=cheessesId;
+this.vehNum=vehNum;
+}
+
+static VehicleBuilder{
+
+
+}
+
+Vehicle setMake(String make){
+this.make=make;
+
+return this;
+}
+}
+
+
+---------------------------------------------
+APP:
+Configuration
+
+
+
+
+API 
+
+@RESTController
+CustomerController{
+
+@Aurowired
+CustomerService CustomerService;
+
+@GetMapping("/customer")
+public ResponseEntity<Customer> getCustomer(){
+
+
+
+}
+
+}
+
+
+
+
+
+
+Service Layer :
+
+CustomerService{
+List<>
+}
+
+@Service
+CustomerServiceImpl implements CustomerService{
+
+
+}
+
+Domain 
+@entity
+class Customer implmentst Serializable{
+@Id
+id
+name
+sal
+}
+
+
+
+Rep
+
+@Repository
+CustomerRepository implments JPACRUDRepository <Customer,id>,implmentst Serializable{
+
+
+}
+
+
+DB :
+
+Table -
+
+Customer -
+id
+name
+sal
+-
+
+
+
+Com
+
+
+
+
+
+
+
+
+CostomerServcie(
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,74 @@
+
+
+-----------------BeauroVeritas-------
+Questions:
+
+AWS:How to connect S3 and uplaod file in Java.
+------------------
+Python:
+1.basic data type :int,dictionary [for json],List,topal
+for loop syntax 
+
+Libary installation with Python
+pyp install linName
+
+requirement.txt :equiv to packagage.json
+pip install -r requirement.txt
+
+pip install -r requirements.txt --no-index --find-links file:///tmp/packages
+
+go to project root and run:
+pip install -r requirements.txt
+
+Angular:
+packagage.json
+
+ create new project
+ create new component
+ create new module
+ create new service
+ 
+ Routing and routing param in two component
+ Parent/Child
+ Promise/Observal
+
+
+----------
+
+Java :
+Stream
+IntStream  Class
+
+----------------
+
+SQL Queries 
+Top salary from table 
+Duplicates
+
+Manager hararchy
+
+Spring /Spring boot
+
+
+
+--------------------------------------
+
+
+
+
+-----------------------------------
+
+
+-----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+

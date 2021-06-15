@@ -1,0 +1,82 @@
+Problem 1:
+
+Array of integers, find pair of given sum
+Ex: [4, 8, 0, 1 , 5, 6 ]  sum -> 1
+Soln : (0,1)
+
+Public List<Integer> findPair(int[] ar, int sum) {
+	List<Integer> result=new ArrayList<Integer>();
+for(int k=0;k<ar.length-1;k++){
+ 
+    
+for(int j=o;j<ar.length-1;j++){
+if(ar[j]==sum- ar[k]){
+result.add(j);
+result.add(ar[k]);
+return result;
+}
+
+}
+
+
+
+}
+}
+
+Problem 2:
+
+LLD
+
+Parking lot LLD :
+Single parking level
+Level contains parking slots
+Parking slots are - 2 wheeler, 4 wheeler
+
+-----------------------------------------------------------------------------------------------
+
+
+Layers:
+DB Table  :
+VehicleType table -Id ,Type
+VehicleSlot table -Id ,Type,Slot
+
+
+
+Domain :
+VehicleSlot :Id ,Type,Slot
+
+
+Parking:
+freeSlot()
+
+freeSlot()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

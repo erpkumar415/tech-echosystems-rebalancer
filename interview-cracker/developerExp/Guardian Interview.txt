@@ -1,0 +1,27 @@
+Guardian Interview
+
+Spring- Beans -Factory, Properties files config
+Spring boot in depth 
+
+Web Services
+Design Pattern -Observer Pattern
+
+DSA 
+
+
+
+DSA Problem -
+1.Remove third unrepeated character from string 
+2. Find middle of link list
+
+3. Create Spring Application fromm Database in which we get list of employee from DB with result return as Map
+ [Map<String,Employee> ]
+[Map<String,Employee> mapEmpByCityKey] city of employees as key and value list of employees.
+
+4, Create a Red Black Tree
+
+5 Java 8 streams 
+
+
+
+

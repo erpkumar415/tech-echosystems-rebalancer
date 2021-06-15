@@ -1,0 +1,124 @@
+Employee{
+    String name;
+    int age;
+    //getters/setters
+}
+empList : 10000
+age 20 to 30
+
+List<Employee> empList2=empList.stream().filter(e->e.getAge()>20 && e.getAge()<30).collect(Collectors.toList());
+
+
+
+
+Employee{
+String name;
+int age;
+List<String> sportActitives; // Cricket, Football, Basketball
+}
+
+ 
+
+"Football"
+
+List<Employee> empList3=empList.stream().filter(e->e.getSportActitives().contain("Football")).collect(Collectors.toList());
+
+
+
+Employee e1 = new Employee(1,"Name1",["Cricket","Football"]);
+ 
+
+Employee e2 = new Employee(2,"Name2",["Football","Basketball"]);
+
+
+    empList = all list of employee 
+
+    List<String> uniqueActivities= list of unique sports accross all employees in given list
+	
+
+    uniqueList = ["Cricket"."Football","BasketBall"]
+l unique sports 
+
+Set<String>  uniqueList
+List<Employee> empList3=empList.stream().flatmap(e->e.getSportActitives().contain("Football")).collect(Collectors.toList());
+Find all 
+
+
+
+	
+	
+	
+	
+	
+	Student{
+String name;
+double grade; //1 to 5
+int noOfBooks;
+}
+
+Student s1 = new Student("Pankaj",3,10);
+
+ 
+
+Student s2 = new Student("Aniket",2.5,20);
+
+ 
+
+Student s3 = new Student("Chirag",3.5,30);
+
+Find sum of all books for students having grade>=3 
+
+[FlatMap can  help here]
+
+List<Student> empList3=studentList.stream().filter(e->e.getGrade()>=3).map(m->m.getNoOfBooks).collect;
+
+
+>>User one -Post  amy post Mapping in Hibernate
+User{
+@oneToMany(mappedBy="user")
+List <Post> postsList;
+}
+
+
+Post{
+@ManyToOne()
+User user;
+}
+
+
+
+
+
+
+
+1. What is Resolver in Angular
+
+2. Observable Vs Promise
+
+3. Feature of EC 6
+
+4. What is DOM
+
+Backend :
+1.How to use config common file in Micro services
+
+2. 
+
+>>User one -Post  amy post Mapping in Hibernate
+
+3. Spring Boot vs Spring Framework
+
+4. How fix to Outmemoryerror
+
+
+5. How fix to Outmemoryerror
+
+6. How to fix SQL slowness issues
+
+
+
+
+
+
+
+
