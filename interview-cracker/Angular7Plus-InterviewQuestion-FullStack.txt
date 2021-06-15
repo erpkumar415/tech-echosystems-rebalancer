@@ -424,11 +424,15 @@ So basically, we are just making dependencies which are injectable across all co
 28.What is Differance between ng-bootstrap and primeng ?
 
 28.What is amCharts  in angular ?
+   
+amCharts used for responsive graph -Map, XY graph,Pie,Venn Diagram
+https://www.amcharts.com/docs/v4/getting-started/
+  
 
-
-
-
-
+29.What is primeng  in angular ?
+PrimeNG :PrimeNG is a rich set of open source native Angular UI components.
+PrimeNG Components used for responsive -widget like Button.grid,table,menu,Popup etc.
+More:https://primefaces.org/primeng/showcase/#/setup
 
 
 
