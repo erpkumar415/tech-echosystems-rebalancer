@@ -1,0 +1,581 @@
+-----------------------------------------------------------------------------------------------------------
+Core Java,Multi threading,Collections,Exception,Oops,Concurrency,JVM,GC,Java 8- Related Interview Questions
+https://www.toptal.com/java/interview-questions
+https://www.geeksforgeeks.org/classloader-in-java/
+https://www.interviewbit.com/java-8-interview-questions/
+------------------------------------------------------------------------------------------------------------
+1. What is difference between Functional Programming and Object Oriented Programming ?
+
+2. What is difference between abstraction and Encapsulation?
+
+3.What is the main difference between overloading and overriding?
+
+4.What are types of Polymorphism in java?
+
+5.What are ways by which you can implement polymorphism in java?
+
+6.What is Compile time Polymorphism and how is it different from Runtime Polymorphism?
+
+7.Can we overload a static method in java?
+
+8. Can we override a static method in java?
+
+9. What do you mean by covariant method overriding in java?
+In the case of covariant method overriding, the return type must be the same as, or a subtype of, 
+the return type declared in the original overridden method in the superclass.
+The concept of covariant return type was introduced in java 1.5 version.
+
+10.Can we override a method declared as private in java?
+No, you can not override a private method in java. 
+
+11.Does abstract class have constructor in java?
+
+Abstract classes can have constructors. A class can not be instantiated once it is declared as an
+ abstract class but that does not mean that an abstract class cannot have a constructor.
+
+12. Can a constructor be declared as private in java?
+
+Yes, you can declare the constructor as private in java. If the constructor is declared as private, 
+then the class cannot be instantiated, it can be instantiated from another method in the class.
+
+13.What is a wrapper class in java?
+
+The wrapper class in java provides the mechanism to convert primitive type into object and object into primitive type.
+The automatic conversion of primitive type into an object is known as autoboxing and object to primitive type is unboxing.
+
+14.Difference between Composition and Inheritance in OOPs in java?
+
+• Inheritance builds the IS-A relationship while Composition builds a HAS-A relationship.
+• The parent-child relationship is best represented using Inheritance but if only the services of
+another class have to be used then Composition.
+• Though both Inheritance and Composition allows reusing code, one of the disadvantages of
+Inheritance is that it breaks encapsulation.
+
+15.Can a class implement two interfaces wherein they both have a method with the same name and signature in java?
+
+Yes, a class can implement two interfaces wherein they both have a method with the same name and signature.
+
+16.Describe and compare fail-fast and fail-safe iterators. Give examples.
+The main distinction between fail-fast and fail-safe iterators is whether or not the collection can be
+ modified while it is being iterated. Fail-safe iterators allow this; fail-fast iterators do not.
+
+Fail-fast iterators operate directly on the collection itself. During iteration, fail-fast iterators fail 
+as soon as they realize that the collection has been modified (i.e., upon realizing that a member has been added,
+ modified, or removed) and will throw a ConcurrentModificationException. Some examples include 
+ ArrayList, HashSet, and HashMap (most JDK1.4 collections are implemented to be fail-fast).
+
+Fail-safe iterates operate on a cloned copy of the collection and therefore do not throw an exception 
+if the collection is modified during iteration. Examples would include iterators returned by ConcurrentHashMap
+ or CopyOnWriteArrayList.
+ 
+ 17.ArrayList, LinkedList, and Vector are all implementations of the List interface.
+ Which of them is most efficient for adding and removing elements from the list? Explain your answer,
+ including any other alternatives you may be aware of.
+ 
+ 18. Why would it be more secure to store sensitive data (such as a password, social security number, etc.) 
+ in a character array rather than in a String?
+ 
+ In Java, Strings are immutable and are stored in the String pool. What this means is that, once a String is created,
+ it stays in the pool in memory until being garbage collected. Therefore, even after you’re done processing
+ the string value (e.g., the password), it remains available in memory for an indeterminate period of time 
+ thereafter (again, until being garbage collected) which you have no real control over. 
+ Therefore, anyone having access to a memory dump can potentially extract the sensitive data and exploit it.
+
+In contrast, if you use a mutable object like a character array, for example, to store the value,
+you can set it to blank once you are done with it with confidence that it will no longer be retained in memory.
+ 
+19.What is the ThreadLocal class? How and why would you use it?
+
+20. Why main method is public static in Class?
+
+21.What is default first statement in child class constructor ? 
+
+22.What is the volatile keyword? How and why would you use it?
+
+23.What is the difference between atomic / volatile / synchronized?
+
+volatile:
+
+volatile is a keyword. volatile forces all threads to get latest value of the variable 
+from main memory instead of cache. No locking is required to access volatile variables.
+ All threads can access volatile variable value at same time.
+
+Using volatile variables reduces the risk of memory consistency errors, because any write to
+ a volatile variable establishes a happens-before relationship with subsequent reads of that same variable.
+
+This means that changes to a volatile variable are always visible to other threads. 
+What's more, it also means that when a thread reads a volatile variable, it sees not just the latest change 
+to the volatile, but also the side effects of the code that led up the change.
+
+When to use: One thread modifies the data and other threads have to read latest value of data. 
+Other threads will take some action but they won't update data.
+
+AtomicXXX:
+
+AtomicXXX classes support lock-free thread-safe programming on single variables. 
+These AtomicXXX classes (like AtomicInteger) resolves memory inconsistency errors / side effects of 
+modification of volatile variables, which have been accessed in multiple threads.
+
+When to use: Multiple threads can read and modify data.
+
+synchronized:
+
+synchronized is keyword used to guard a method or code block. By making method as synchronized has two effects:
+
+First, it is not possible for two invocations of synchronized methods on the same object to interleave. 
+When one thread is executing a synchronized method for an object, all other threads that invoke synchronized 
+methods for the same object block (suspend execution) until the first thread is done with the object.
+
+Second, when a synchronized method exits, it automatically establishes a happens-before relationship 
+with any subsequent invocation of a synchronized method for the same object. This guarantees that changes
+ to the state of the object are visible to all threads.
+
+When to use: Multiple threads can read and modify data. Your business logic not only update the data 
+but also executes atomic operations
+
+AtomicXXX is equivalent of volatile + synchronized even though the implementation is different. 
+AmtomicXXX extends volatile variables + compareAndSet methods but does not use synchronization.
+
+
+If you have only one thread modifying your boolean, you can use a volatile boolean (usually you do 
+this to define a stop variable checked in the thread's main loop).
+
+However, if you have multiple threads modifying the boolean, you should use an AtomicBoolean.
+
+
+
+24.Compare the sleep() and wait() methods in Java, including when and why you would use one vs. the other.
+
+sleep() is a blocking operation that keeps a hold on the monitor / lock of the shared object for the specified number 
+of milliseconds.
+
+wait(), on the other hand, simply pauses the thread until either (a) the specified number of milliseconds have elapsed 
+or (b) it receives a desired notification from another thread (whichever is first), without keeping a hold on 
+the monitor/lock of the shared object.
+
+sleep() is most commonly used for polling, or to check for certain results, at a regular interval. wait() is
+ generally used in multithreaded applications, in conjunction with notify() / notifyAll(), to achieve synchronization 
+ and avoid race conditions.
+
+ 25.How can you catch an exception thrown by another thread in Java?
+ 
+ This can be done using Thread.UncaughtExceptionHandler.
+ // create our uncaught exception handler
+Thread.UncaughtExceptionHandler handler = new Thread.UncaughtExceptionHandler() {
+    public void uncaughtException(Thread th, Throwable ex) {
+        System.out.println("Uncaught exception: " + ex);
+    }
+};
+
+// create another thread
+Thread otherThread = new Thread() {
+    public void run() {
+        System.out.println("Sleeping ...");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            System.out.println("Interrupted.");
+        }
+        System.out.println("Throwing exception ...");
+        throw new RuntimeException();
+    }
+};
+
+// set our uncaught exception handler as the one to be used when the new thread
+// throws an uncaught exception
+otherThread.setUncaughtExceptionHandler(handler);
+
+// start the other thread - our uncaught exception handler will be invoked when
+// the other thread throws an uncaught exception
+otherThread.start();
+
+ 
+ 26.What is the Java Classloader? List and explain the purpose of the three types of class loaders.
+
+points -:
+
+Delegation - Each classloader first delegates loading of class to it's parent (goes all the way up the hierarchy). 
+If parent is not able to load the class then class is tried to be loaded by it's child. If it cannot be loaded by any 
+of the classloaders ClassNotFoundException exception is throws.
+
+Visibility  - Each classloader knows about the classes that it's parents have loaded. However it does not work the other
+ way around. Parents will not know the classes loaded by their child. This brings us to the 3rd points.
+
+Uniqueness - Each class is loaded exactly once. Since each child delegates class loading to it's parent and 
+know the classes it's parents have loaded, it will try to load classes only when it is not loaded by its parent.
+Now these are ofcource default behavior of  classloaders that already exist. However you can write your own 
+class loaders and break it (not recommended though).
+
+Classloading in Java:
+Java has 3 main classloaders that are used to load classes at runtime -
+--1.Bootstrap ClassLoader (Also called Primordial classLoader)
+--2.Extension ClassLoader
+--3.Application  ClassLoader
+In that order. So  Bootstrap is parent of Extension and Extension is parent of Application classloader. 
+Each of these classlaoders load classes from a predefined location.
+ 
+Flow:
+
+--1.Bootstrap ClassLoader- is the topmost level classloader. It does not have any parent. This classloader is a native 
+implementation . This class loader is responsible of loading all standard JDK classes. 
+It does this from path - <JRE>/lib/rt.jar. Since this is native implementation it does not refer to ClassLoader class.
+
+---2.Extension ClassLoader -is direct child of Bootstrap classLoader. When this classloader tries to load a class it first 
+delegates it to it's parent - Bootstrap ClassLoader. If parent is unsuccessful then Extension ClassLoader will try to
+ load classes from path <JRE>/lib/ext or from path specified in java.ext.dirs system variable. 
+ In JVM this is implemented by - sun.misc.Launcher$ExtClassLoader
+
+ ---3.Application classloader -is child of Extension classloader. Execution sequence remains same. When a class is loaded from this classloader it delegates to it's parent Extension which in turn delegates it to it's parent Bootstrap. If parents are unsuccessful in loading classes then Application classloaded will try to load class from the classpath - you can give it with arguments -classpath or -cp or specify it in manifest file of jar. In JVM this is implemented by sun.misc.Launcher$AppClassLoader
+
+If application classloader is not able to load the class then it throws ClassNotFoundException. 
+When JVM loads this is the order in which classloaders execute and load classes.
+
+
+Principles of functionality of a Java ClassLoader:
+Principles of functionality are the set of rules or features on which a Java ClassLoader works. 
+There are three principles of functionality, they are:
+
+A. Delegation Model: The Java Virtual Machine and the Java ClassLoader use an algorithm called the Delegation Hierarchy Algorithm to Load the classes into the Java file.
+The ClassLoader works based on a set of operations given by the delegation model. They are:
+
+ClassLoader always follows the Delegation Hierarchy Principle.
+Whenever JVM comes across a class, it checks whether that class is already loaded or not.
+If the Class is already loaded in the method area then the JVM proceeds with execution.
+If the class is not present in the method area then the JVM asks the Java ClassLoader Sub-System to load that particular class, then ClassLoader sub-system hands over the control to Application ClassLoader.
+Application ClassLoader then delegates the request to Extension ClassLoader and the Extension ClassLoader in turn delegates the request to Bootstrap ClassLoader.
+Bootstrap ClassLoader will search in the Bootstrap classpath(JDK/JRE/LIB). If the class is available then it is loaded, if not the request is delegated to Extension ClassLoader.
+Extension ClassLoader searches for the class in the Extension Classpath(JDK/JRE/LIB/EXT). If the class is available then it is loaded, if not the request is delegated to the Application ClassLoader.
+Application ClassLoader searches for the class in the Application Classpath. If the class is available then it is loaded, if not then a ClassNotFoundException exception is generated.
+
+B.Visibility Principle: The Visibility Principle states that a class loaded by a parent ClassLoader is visible to the child 
+ClassLoaders but a class loaded by a child ClassLoader is not visible to the parent ClassLoaders. Suppose a class GEEKS.class
+ has been loaded by the Extension ClassLoader, then that class is only visible to the Extension ClassLoader and 
+ Application ClassLoader but not to the Bootstrap ClassLoader. If that class is again tried to load using Bootstrap
+ ClassLoader it gives an exception java.lang.ClassNotFoundException.
+ 
+C.Uniqueness Property: The Uniquesness Property ensures that the classes are unique and there is no repetition of classes. 
+This also ensures that the classes loaded by parent classloaders are not loaded by the child classloaders. 
+If the parent class loader isn’t able to find the class, only then the current instance would attempt to do so itself.
+
+
+More details :https://www.geeksforgeeks.org/classloader-in-java/
+
+
+
+27 .What is the Difference between JDK and JRE?
+
+The Java Runtime Environment (JRE) is basically the Java Virtual Machine (JVM) where your Java programs are being executed.
+It also includes browser plugins for applet execution.
+
+The Java Development Kit (JDK) is the full featured Software Development Kit for Java, including the JRE, 
+the compilers and tools (like JavaDoc, and Java Debugger), in order for a user to develop, compile and execute 
+Java applications.
+
+
+
+28.What is reflection and why is it useful?
+
+The name reflection is used to describe code which is able to inspect other code in the same system (or itself) and
+ to make modifications at runtime.
+
+For example, say you have an object of an unknown type in Java, and you would like to call a 'doSomething' method 
+on it if one exists. Java's static typing system isn't really designed to support this unless the object conforms to
+ a known interface, but using reflection, your code can look at the object and find out if it 
+ has a method called 'doSomething' and then call it if you want to.
+
+ Method method = foo.getClass().getMethod("doSomething", null);
+method.invoke(foo, null);
+
+29. Is Java “pass-by-reference” or “pass-by-value”?
+Java is always pass-by-value. Unfortunately, when we pass the value of an object, we are passing the reference to it. 
+There is no such thing as "pass-by-reference" in Java.
+This is confusing to beginners.
+
+30.What are Java inner ,Static and annonomous class?
+
+31.What do the ... dots in the method parameters mean?
+That feature is called varargs, and it's a feature introduced in Java 5. 
+It means that function can receive multiple String arguments:
+public void myMethod(String... strings){
+    // method body
+}
+myMethod("foo", "bar");
+myMethod("foo", "bar", "baz");
+myMethod(new String[]{"foo", "var", "baz"}); // you can eve
+
+32.Explain a use case for the Builder Design Pattern.
+
+33.Explain a use case for the Singleton Design Pattern.
+
+34.Explain a use case for the Factory Design Pattern.
+
+35.Explain a use case for the Factory of Factory Design Pattern.
+
+36.What are SOLID Design Pattern in Java?
+
+37.Provide some examples when a finally block won't be executed in Java?
+
+38.What's the difference between SoftReference and WeakReference in Java?
+
+39. Is a finally block executed when an exception is thrown from a try block that does not 
+have a catch block, and if so, when?
+
+40.What are static initializers and when would you use them?
+41. If one needs a Set, how do you choose between HashSet vs. TreeSet?
+
+At first glance, HashSet is superior in almost every way: O(1) add, remove and contains, vs. O(log(N)) for TreeSet.
+
+However, TreeSet is indispensable when you wish to maintain order over the inserted elements or query
+ for a range of elements within the set.
+ TreeSet is a good choice when order matters and when reads are balanced against the increased cost of writes.
+
+42.What are method references, and how are they useful?
+
+Method references were introduced in Java 8 and allow constructors and methods (static or otherwise) 
+to be used as lambdas. They allow one to discard the boilerplate of a lambda when the method reference matches
+ an expected signature.
+ 
+ For example, suppose we have a service that must be stopped by a shutdown hook. Before Java 8, we would have code like this:
+
+        final SomeBusyService service = new SomeBusyService();
+        service.start();
+
+        onShutdown(new Runnable() {
+            @Override
+            public void run() {
+                service.stop();
+            }
+        });
+With lambdas, this can be cut down considerably:
+
+        onShutdown(() -> service.stop());
+However, stop matches the signature of Runnable.run (void return type, no parameters), and so we can introduce a 
+method reference to the stop method of that specific SomeBusyService instance:
+
+        onShutdown(service::stop);
+
+43.What is the difference between String s = "Test" and String s = new String("Test")? Which is better and why?
+
+44.		What is the difference between StringBuilder  and StringBuffer and String ?
+
+ Both StringBuilder and StringBuffer are mutable. That means you can change the content of them, with in the same location.
+ 
+Simply use StringBuilder unless you really are trying to share a buffer between threads. StringBuilder is
+ the unsynchronized (less overhead = more efficient) younger brother of the original synchronized StringBuffer class.
+
+StringBuffer came first. Sun was concerned with correctness under all conditions, so they made it synchronized 
+to make it thread-safe just in case.
+
+StringBuilder came later. Most of the uses of StringBuffer were single-thread and unnecessarily paying the cost 
+of the synchronization.
+
+Since StringBuilder is a drop-in replacement for StringBuffer without the synchronization, there would not be 
+differences between any examples.
+
+If you are trying to share between threads, you can use StringBuffer, but consider whether higher-level synchronization 
+is necessary, e.g. perhaps instead of using StringBuffer, should you synchronize the methods that use the StringBuilder.
+
+String:
+String is immutable, if you try to alter their values, another object gets created,
+whereas StringBuffer and StringBuilder are mutable so they can change their values.
+The String class represents character strings. All string literals in Java program, such as "abc" are implemented as
+nstances of this class.
+
+String objects are immutable once they are created we can't change. (Strings are constants).
+
+If a String is created using constructor or method then those strings will be stored in Heap Memory as well 
+as SringConstantPool. But before saving in pool it invokes intern() method to check object availability with 
+same content in pool using equals method. If String-copy is available in the Pool then returns the reference.
+Otherwise, String object is added to the pool and returns the reference.
+
+
+Which one to use when? 
+StringBuilder : When you need a string, which can be modifiable, and only one thread is accessing 
+and modifying it.
+StringBuffer : When you need a string, which can be modifiable, 
+and multiple threads are accessing and modifying it.
+		
+
+45.What’s the difference between a ClassNotFoundException and NoClassDefFoundError?
+
+46.What is the contract between equals and hashCode of an object?
+
+47.What’s the difference between  Shallowing and Deep cloning?
+
+48.How does the JVM handle storing local variables vs storing objects?
+
+Objects are stored on the heap. Variables are a reference to the object.
+
+Local variables are stored on the stack.
+
+49 .Why do you need to use synchronized methods or blocks?
+
+50.What is the difference between HashMap and ConcurrentHashMap?
+
+51.How are Annotations better than a Marker Interfaces?
+Annotations lets one achieve the same purpose of conveying metadata about the class to its consumers 
+without creating a separate type for it. Annotations are more powerful,
+ too, letting programmers pass more sophisticated information to classes that “consume” it.
+
+52.What is MetaSpace? How does it differ from PermGen?
+PremGen: MetaData information of classes was stored in PremGen (Permanent-Generation) memory type before Java 8. 
+PremGen is fixed in size and cannot be dynamically resized. It was a contiguous Java Heap Memory.
+
+MetaSpace: Java 8 stores the MetaData of classes in native memory called 'MetaSpace'.
+ It is not a contiguous Heap Memory and hence can be grown dynamically which helps to overcome the size constraints. 
+This improves the garbage collection, auto-tuning, and de-allocation of metadata.
+
+53.What are functional or SAM interfaces? 
+
+Functional Interfaces are an interface with only one abstract method. Due to which it is also known as the 
+Single Abstract Method (SAM) interface. It is known as a functional interface because it wraps a function as 
+an interface or in other words a function is represented by a single abstract method of the interface.
+
+Functional interfaces can have any number of default, static, and overridden methods. For declaring 
+Functional Interfaces @FunctionalInterface annotation is optional to use. If this annotation is used 
+for interfaces with more than one abstract method, it will generate a compiler error.
+
+
+54.Can a functional interface extend/inherit another interface?
+A functional interface cannot extend another interface with abstract methods as it will void the rule of 
+one abstract method per functional interface.
+It can extend other interfaces which do not have any abstract method and only have the default, static,
+ another class is overridden, and normal methods.
+ 
+55.What is the default method, and why is it required?
+
+56.What are static methods in Interfaces?
+
+57.What are some standard Java pre-defined functional interfaces?
+Some of the famous pre-defined functional interfaces from previous Java versions are Runnable, Callable, 
+Comparator, and Comparable. While Java 8 introduces functional interfaces like Supplier, Consumer, Predicate, 
+etc. Please refer to the java.util.function doc for other predefined functional interfaces and its description 
+introduced in Java 8.
+
+Runnable: use to execute the instances of a class over another thread with no arguments and no return value. 
+
+Callable: use to execute the instances of a class over another thread with no arguments and it either returns 
+a value or throws an exception.
+
+Comparator: use to sort different objects in a user-defined order
+
+Comparable: use to sort objects in the natural sort order
+
+
+58.What are the various categories of pre-defined function interfaces?
+Function: To transform arguments in returnable value.
+
+Predicate: To perform a test and return a Boolean value.
+
+Consumer: Accept arguments but do not return any values.
+
+Supplier: Do not accept any arguments but return a value. 
+
+Operator: Perform a reduction type operation that accepts the same input types.
+
+59.What is the lambda expression in Java and How does a lambda expression relate to a functional interface?
+
+60.What does the String::ValueOf expression mean?
+It is a static method reference to method Valueof() of class String. It will return the 
+string representation of the argument passed.
+
+61.What is an Optional class? What are the advantages of using the Optional class?
+62. What are Java 8 streams?
+A stream is an abstraction to express data processing queries in a declarative way. 
+
+A Stream, which represents a sequence of data objects & series of operations on that data is a data pipeline that is 
+not related to Java I/O Streams does not hold any data permanently.
+The key interface is java.util.stream.Stream<T>. It accepts Functional Interfaces so that 
+lambdas can be passed. Streams support a fluent interface or chaining.
+
+63. How are Java 8 streams internally works?
+
+64.What are the main components of a Stream?
+
+Components of the stream are:
+-1.A data source
+-2.Set of Intermediate Operations to process the data source [Map,Filter,Sorted]
+-3.Single Terminal Operation that produces the result [Collect]
+
+
+65.What are Intermediate and Terminal operations?
+Intermediate Operations:
+
+Process the stream elements.
+Typically transforms a stream into another stream.
+Are lazy, i.e., not executed till a terminal operation is invoked.
+Does internal iteration of all source elements.
+Any number of operations can be chained in the processing pipeline.
+Operations are applied as per the defined order.
+Intermediate operations are mostly lambda functions.
+Terminal Operations:
+
+Kick-starts the Stream pipeline.
+used to collect the processed Stream data.
+
+66. What are the most commonly used Intermediate operations?
+
+Filter(Predicate<T>) - Allows selective processing of Stream elements. It returns elements that are satisfying the 
+supplied condition by the predicate.
+
+map(Funtion<T, R>) - Returns a new Stream, transforming each of the elements by applying the 
+supplied mapper function.= sorted() - Sorts the input elements and then passes them to the next stage.
+
+distinct() - Only pass on elements to the next stage, not passed yet.
+
+limit(long maxsize) - Limit the stream size to maxsize.
+
+skip(long start) - Skip the initial elements till the start.
+
+peek(Consumer) - Apply a consumer without modification to the stream.
+
+flatMap(mapper) - Transform each element to a stream of its constituent elements and flatten all the streams into 
+a single stream.
+
+67.What is the stateful intermediate operation? Give some examples of stateful intermediate operations.
+To complete some of the intermediate operations, some state is to be maintained, and such intermediate 
+operations are called stateful intermediate operations. Parallel execution of these types of operations is complex.
+
+For Eg: sorted() , distinct() , limit() , skip() etc. 
+
+Sending data elements to further steps in the pipeline stops till all the data is sorted for sorted() and
+ stream data elements are stored in temporary data structures.
+ 
+68. What is the most common type of Terminal operations?
+collect() - Collects single result from all elements of the stream sequence.
+reduce() - Produces a single result from all elements of the stream sequence
+count() - Returns the number of elements on the stream.
+min() - Returns the min element from the stream.
+max() - Returns the max element from the stream.
+Search/Query operations
+anyMatch() , noneMatch() , allMatch() , ... - Short-circuiting operations.
+Takes a Predicate as input for the match condition.
+Stream processing will be stopped, as and when the result can be determined.
+Iterative operations
+forEach() - Useful to do something with each of the Stream elements. It accepts a consumer.
+forEachOrdered() - It is helpful to maintain order in parallel streams.
+
+69.How are Collections different from Stream?
+Collections are the source for the Stream. Java 8 collection API is enhanced with the default methods returning 
+Stream<T> from the collections.
+
+Collections:-Data structure holds all the data elements.Can be processed any number of times.
+It Is a data store.
+
+Stream:No data is stored. Have the capacity to process an infinite number of elements on demand.
+Traversed only once.It Is an API to process the data.
+
+70. What is completableFuture ? How it is different from Future ?
+71. What are semaphore vs countdownlatch vs cyclicbarrier?
+
+71. How to create Thread Pool using executor services?
+
+71. How to timeout any task processing after 30 sec of execution? Think about Thread use case.
+
+
+
+
+
+
+
+
