@@ -3,6 +3,13 @@ Core Java,Multi threading,Collections,Exception,Oops,Concurrency,JVM,GC,Java 8- 
 https://www.toptal.com/java/interview-questions
 https://www.geeksforgeeks.org/classloader-in-java/
 https://www.interviewbit.com/java-8-interview-questions/
+
+http://opensourceforgeeks.blogspot.com/2017/05/how-concurrenthashmap-works-internally.html
+
+https://www.javacodemonk.com/java-8-parallel-stream-custom-threadpool-48643a91
+
+https://www.javacodemonk.com/implement-custom-thread-pool-in-java-without-executor-framework-ca10e61d
+
 ------------------------------------------------------------------------------------------------------------
 1. What is difference between Functional Programming and Object Oriented Programming ?
 
@@ -572,10 +579,275 @@ Traversed only once.It Is an API to process the data.
 
 71. How to timeout any task processing after 30 sec of execution? Think about Thread use case.
 
+72. What is IntStream and IntSummaryStatistics  in Java 8?
+
+IntSummaryStatistics:
+It is useful in the sense that it maintains a running sum, average, etc. of the integers and hence can be used in the
+ manipulation of statistical data.
+ 
+ public static void printTrackLengthStatistics(Album album) {
+  IntSummaryStatistics trackLengthStats
+      = album.getTracks()
+          .mapToInt(track -> track.getLength())
+          .summaryStatistics();
+
+  System.out.printf("Max: %d, Min: %d, Ave: %f, Sum: %d",
+           trackLengthStats.getMax(),
+           trackLengthStats.getMin(),
+           trackLengthStats.getAverage(),
+           trackLengthStats.getSum());
+}
+
+IntStream:
+IntStream.range(1, 5).max().getAsInt();  
+// > 4
+IntStream.range(1, 5).min().getAsInt();  
+// > 1
+
+IntStream.of(1, 2, 3);  
+// > 1, 2, 3
+IntStream.range(1, 3);  
+// > 1, 2
+IntStream.rangeClosed(1, 3);  
+// > 1, 2, 3
+
+IntStream.range(1, 5).map(i -> i * i);  
+// > 1, 4, 9, 16
+
+DoubleStream stream = IntStream.range(1, 5).mapToDouble(i -> i);
+
+
+73. How concurrenthashmap internally works? 
+
+The ConcurrentHashMap class is introduced in JDK 1.5 belongs to java.util.concurrent package, which implements ConcurrentMap as well as to Serializable interface also. ConcurrentHashMap is an enhancement of HashMap as we know that while dealing with Threads in our application HashMap is not a good choice because performance-wise HashMap is not up to the mark.
+
+Key points of ConcurrentHashMap:  
+
+The underlined data structure for ConcurrentHashMap is Hashtable.
+ConcurrentHashMap class is thread-safe i.e. multiple threads can operate on a single object without any complications.
+At a time any number of threads are applicable for a read operation without locking the ConcurrentHashMap object which 
+is not there in HashMap.
+In ConcurrentHashMap, the Object is divided into a number of segments according to the concurrency level.
+The default concurrency-level of ConcurrentHashMap is 16.
+In ConcurrentHashMap, at a time any number of threads can perform retrieval operation but for updated in the object, 
+the thread must lock the particular segment in which the thread wants to operate. This type of locking mechanism is 
+known as Segment locking or bucket locking. Hence at a time, 16 update operations can be performed by threads.
+Inserting null objects is not possible in ConcurrentHashMap as a key or value.
+
+We use ConcurrentHashMap when a high level of concurrency is required. But already SynchronizedMap is present so 
+what advantages does ConcurrentHashMap have over synchronized map.Both are thread safe. The major advantage is in case of
+synchronizedMap every write operation acquires lock on entire SynchronizedMap while in case of ConcurrentHashMap the lock
+is only on one of the segments.
+
+
+Constructors of ConcurrentHashMap:-----
+
+Concurrency-Level: It is the number of threads concurrently updating the map. The implementation performs internal sizing
+ to try to accommodate this many threads.
+Load-Factor: It’s a threshold, used to control resizing.
+Initial Capacity: Accommodation of a certain number of elements initially provided by the implementation. 
+if the capacity of this map is 10. It means that it can store 10 entries.
+
+
+Internal Working of ConcurrentHashMap-
+
+As no concurrency level has been set explictity, the ConcurrentHashMap gets divided into 16 segments. And each segment acts
+ as an independent HashMap. During right operation the Lock is obtained on this particular segment and 
+ not on the entire HashMap Debug the code when it reaches the for Loop above and check the conMap details.
+
+ConcurrentHashMap as the name suggests allows concurrent read/writes to the Map. But there are limitations. 
+ConcurrentHashMap maintains another data structure internally called segments. Each bucket of HashMap is part of one
+ of the segments. Number of segments is called Concurrency-Level which determines number of thread that can write 
+ simultaneous. This Segments gets locked when writing/updating/removing data. Think of Segments as locks used to 
+ prevent concurrent write to same bucket of hashmap leading to inconsistency. So as long as write to concurrent hashmap 
+ is on different segments it can happen in parallel. 
+Reads are completely lock free i.e No need to acquire lock for reading. Last updated value is returned.
+
+Concurrency-Level , Segment array and initialization :
+First when you create a ConcurrentHashMap you can provide concurrency level. This determines size of Segment array. 
+Size of segment array will always be equal or more than the concurrency level. If this is not provided default is used - 
+static final int MAX_SEGMENTS = 1 << 16; // slightly conservative
+Note that the size of segment table will always be power of 2. So if you give  concurrency level 
+as 10 then next best power of 2 match will be picked up i.e 16 and Segment array of size 16 will be created which 
+implies 16 threads can simultaneously operate on the map.
 
 
 
+74. What is concurrenthashmap? 
+
+75.Why HashMap capacity is always expressed in power of 2?
+
+HashMap always maintains its internal capacity in power of 2s, if you supply a different initial capacity then it will 
+automatically round it nearest power of two using the below code.
+
+This is done to make get(key) calls faster by utilizing the below bitwise hack to calculate appropriate bucket location for a 
+given key. We know that modulo of power of two can be expressed in terms of below bitwise operation. Please note that modulus 
+operator (%) is around 10x slower than the below bitwise hack, which matters for a function like HashMap’s get(key)
+
+But to utilize the above performance tweak, x must be power of 2. Thus HashMap’s internal capacity is always in power of 2.
 
 
+76.What is Load Factor in HashMap Context?
+The load factor is a measure of how full the hash table is allowed to get before its capacity is automatically increased.
+ Default initial capacity of the HashMap takes is 16 and load factor is 0.75f (i.e 75% of current map size). 
+The load factor represents at what level the HashMap capacity should be doubled.
+
+
+77.Custom Thread pool implementation in Java.
+Thread pool executor requires a Queue for holding tasks and a collection of Worker Threads that will pick up tasks from 
+the work queue start running them. Let us try to write our own simple Thread Pool Executor implementation. 
+It is a typical Producer Consumer Problem statement.
+
+
+
+CustomThreadPoolExecutor Basic Implementation
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
+public class CustomThreadPoolExecutor {
+    private final BlockingQueue<Runnable> workerQueue;
+    private final Thread[] workerThreads;
+
+    public CustomThreadPoolExecutor(int numThreads) {
+        workerQueue = new LinkedBlockingQueue<>();
+        workerThreads = new Thread[numThreads];
+        int i = 0;
+        for (Thread t : workerThreads) {
+            t = new Worker("Custom Pool Thread " + ++i);
+            t.start();
+        }
+    }
+
+    public void addTask(Runnable r) {
+        try {
+            workerQueue.put(r);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    class Worker extends Thread {
+        public Worker(String name) {
+            super(name);
+        }
+
+        public void run() {
+            while (true) {
+                try {
+                    workerQueue.take().run();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        CustomThreadPoolExecutor threadPoolExecutor = new CustomThreadPoolExecutor(10);
+        threadPoolExecutor.addTask(() -> System.out.println("First print task"));
+        threadPoolExecutor.addTask(() -> System.out.println("Second print task"));
+    }
+
+}
+The above program will create pool of 10 worker threads and initialize them all.
+
+Explanation
+We are using two classes from standard java library in this implementation:
+
+LinkedBlockingQueue
+An optionally-bounded blocking queue based on linked nodes. This queue orders elements FIFO (first-in-first-out).
+ It is thread-safe in nature and acts as a temporary storage of runnable tasks that are due for execution.
+
+Thread
+All the threads get initilized and started at the creation of ThreadPoolExecutor. All threads listen on the shared workqueue
+ for incoming tasks in never ending loop.
+
+
+78. What are ambiguty problem in method Overriding case ?
+
+79.What is Constructor Chaining in Java?
+
+Constructor Chaining is the process of calling one constructor of a class from another constructor of the same class or 
+another class using the current object of the class. 
+
+There are two ways by which we can use constructor chaining in Java. These ways depend on whether we are using it 
+in the same class or the different class.
+
+Using this keyword
+Using the super keyword
+
+
+Constructor Chaining with super() keyword
+If we want to call the constructor from the parent class, then we use the super keyword. 
+Thus when there is more than one class with the relationship of inheritance, we need to use the super keyword in the child 
+class to call the constructor of the parent class. We can call a constructor of the current class only with this(). 
+For example:
+package com.techvidvan.constructorchaining;
+class Parent {
+  Parent() {
+    System.out.println("Parent class default constructor");
+  }
+  Parent(int x) {
+    System.out.println("Parent class one-argument constructor");
+  }
+}
+class Child extends Parent {
+  Child() {
+    //by default the default constructor of Parent class is invoked
+    System.out.println("Child class default constructor");
+  }
+  Child(int x) {
+    super(); // default constructor of Parent class is invoked
+    System.out.println("Child class one-argument constructor");
+  }
+}
+public class SuperExample {
+  public static void main(String arg[]) {
+    Child obj1 = new Child();
+    Child obj2 = new Child(10);
+  }
+}
+
+
+Constructor Chaining with this() keyword
+If we want to call the constructor from the same class, then we use this keyword. Suppose we want to call both default and 
+parameterized constructor during the instantiation of the class, then we pass the parameter at the object creation and in that
+ parameterized constructor, we will write this statement so that the default constructor will be called.
+ Let’s see an example to understand this:
+package com.techvidvan.constructorchaining;
+class Example {
+  //default constructor
+  Example() {
+    System.out.println("Inside Default");
+  }
+  //Parameterized constructor
+  Example(int n) {
+    //calling default constructor
+    this();
+    System.out.println("Inside Parameterized");
+  }
+}
+public class ThisExample {
+  public static void main(String arg[]) {
+    //calling the parameterized constructor
+    Example obj = new Example(15);
+  }
+}
+
+80. What are type of GC?How it works
+
+81. Explan  are JVM Memory Model ?
+
+82. Explan GC activity on Heap Memory?
+
+83. What is String Pool?
+
+83. What is change in HashMap in Java 8?
+
+84. Example for Sort,Map,Filter,FlatMap,GroupBy in Java 8 Stream API?
+
+85. How to handle checked exception in Java 8 lamda function implementation without try/catch?
 
 

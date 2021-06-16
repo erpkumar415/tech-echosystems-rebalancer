@@ -394,11 +394,84 @@ So basically, we are just making dependencies which are injectable across all co
 
 16. How to make shared module ?
 
-17. What is Differance between CanActivate and CanActivate  ? And when to use them?
+17. What is Differance between CanActivate and CanDeactivate  ? And when to use them?
+
+Controlling Access to or from a Route:
+
+To control whether the user can navigate to or away from a given route, use route guards.
+
+For example, we may want some routes to only be accessible once the user has logged in or accepted Terms
+ & Conditions. We can use route guards to check these conditions and control access to routes.
+
+Route guards can also control whether a user can leave a certain route. For example, say the user has typed 
+information into a form on the page, but has not submitted the form. If they were to leave the page, 
+they would lose the information. We may want to prompt the user if the user attempts to leave the route without submitting 
+or saving the information
+
+canActivate and canDeactivate are guards, when your app multiple roles in application, like user, admin etc, 
+you use guards to protece them, also you use canActivate for pages which are accessible only for loggedin users 
+and vice versa for canDeactivate
+
+Registering the Route Guards with Routes:
+
+In order to use route guards, we must register them with the specific routes we want them to run for.
+For example, say we have an accounts route that only users that are logged in can navigate to. 
+This page also has forms and we want to make sure the user has submitted unsaved changes before leaving the accounts page.
+
+In our route config we can add our guards to that route:
+
 
 18.What is resolver in angular ? why it used?
 
-19.What is Differance between resolver and CanActivate and CanActivate  ?
+19.What is Differance between resolver and CanActivate and canDeactivate  ?
+there are a lot of guards in Angular that we can use to protect routes and provide the right page for the right user.
+
+Guards are processed in the following order:
+canDeactivate
+canLoad
+canActivateChild
+canActivate
+resolve
+
+--1.canActivate (Guard navigation to a route):
+The canActivate is called when the URL changes to the route and much the route with the Guard. This type of guards is commonly used to:
+Limit route access to specific users
+Ensure prerequisites are met
+If you use Angular CLI, you can generate the guard you want with the following command:
+'ng g g article/auth'
+The first g is for generate and the second is for guard. After launching this command on the terminal,
+ the Angular CLI will ask you which guard do you want to implement except canDeactivate and canLoad, 
+ I’ll talk about them later. After choosing the guard type, the CLI generates the guard with its testing file.
+
+--2.canActivateChild (Guard navigation to a child route)
+This guard type is similar to the canActivate guard except that it is called when activating a route child 
+and not the route itself. This guard job is to check the criteria before activating a child route. This type of guards is commonly used when:
+Limit access to child route
+Ensure prerequisites for the child route are met
+
+--3.canDeactivate (Guard navigation away from a route):
+The canDeactivate guard’s job is to check criteria before leaving this time a route. Some common use cases for this type 
+of guard are:
+Check for unsaved changes
+Confirm leaving an incomplete operation
+Alert the user
+
+--4.canLoad (Prevent asynchronous routing):
+The canLoad guard is implemented to decide if children can be loaded or not. 
+You might be wondering what’s the difference between the canLoadand the canActivate?
+Well, there is a difference, the canActivate exists to prevent unauthorized users from accessing a route, while canLoad 
+is used to prevent the application from loading an entire module or component in a lazy way (lazy loading) if the user
+ is not authorized. 
+So the main advantage of this type of guard is to optimize the app and have better performance.
+
+
+--5.resolve (Prefetch data before activating a route):
+The last type I’m going to talk about is the resolve guard. This guard allows us data before we navigate to a route. 
+You may say, wait but we can retrieve data in the ngOnInit() life cycle hook, right? I agree but this approach will lead 
+us to see an empty component at the beginning. If your client is okay with an empty component at the opening or a spinner 
+while loading data, that’s okay but if not there is a solution for that which is the resolve guard. This allows you to 
+render the component along with data.
+
 
 20. What is Interceptor in angular ? why it used?
 

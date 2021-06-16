@@ -1,0 +1,128 @@
+-----------------------------------------------------------------------------------------------------
+Java Microservices Springboot Spring Cloud -Interview questions 10 years experiences Lead  developer
+Ref :
+https://dzone.com/articles/monolith-to-microservices-using-the-strangler-pattern
+
+https://ordina-jworks.github.io/monitoring/2020/11/16/monitoring-spring-prometheus-grafana.html
+
+https://stackabuse.com/monitoring-spring-boot-apps-with-micrometer-prometheus-and-grafana
+
+https://www.scalyr.com/blog/prometheus-grafana-capturing-displaying-metrics/
+
+https://www.munonye.com/microservices/how-to-configure-premetheus-and-grafana-with-springboot-for-monitoring-microservices/
+
+
+https://www.javainuse.com/spring/cloud-sleuth
+https://livebook.manning.com/book/exploring-microservice-development/2-chapter-9-distributed-tracing-with-spring-cloud-sleuth-and-zipkin/
+
+
+
+
+-----------------------------------------------------------------------------------------------------
+
+1. What are 12 factor Principal in Microservices Systems ?
+
+2. What is Service Mesh in Microservices Systems ?
+
+3. What are Design Pattern used  Microservices Systems?
+
+4. What are Advantages of  Microservices Systems?
+
+5. What are Disadvantages of  Microservices Systems?
+
+6. What are Challenges of  Microservices Systems?
+
+7. What are Strangler Pattern in  Microservices Systems?
+
+
+Strangler Pattern is a way of migrating a legacy system incrementally by replacing existing functionalities with 
+new applications and services in a phased approach. After the replacement of the entire functionality the new application system
+eventually replaces all the old legacy system's features. The name "strangler pattern" was inspired from strangler fig trees.
+
+
+Why choose Strangler Pattern for microservices modernization?
+A big bang application approach or completely replacing a complex system with microservices can be a huge risk. 
+So, adopting the strangler pattern to gradually migrate into a new system reduces the risk of a complete failure. 
+However, running two separate versions of an application means that clients must know where each feature is located.
+ Every time a feature or service is migrated, clients need to be updated to point to the new location. 
+ Strangler pattern overcomes this challenge of accessing multiples applications by creating a routing facade.
+
+The routing facade intercepts requests going to the backend legacy system and routes these oncoming requests either to 
+the legacy application or the new application. The client’s interface continues the old way unaware that any technology
+ migration has taken place or is in progress.
+
+
+ 
+The Strangler Pattern is a popular design pattern to incrementally transform your monolithic application into microservices 
+by replacing a particular functionality with a new service. Once the new functionality is ready, 
+the old component is strangled, the new service is put into use, and the old component is decommissioned altogether.
+
+Any new development is done as part of the new service and not part of the Mmonolith. This allows you to 
+achieve high-quality code for the greenfield development. You can follow Test-Driven Development for your business logic 
+and integrate SonarQube with your deployment pipeline to prevent any technical debt from accruing.
+
+8. What is SAGA Pattern in microservices ?
+
+9. What is Event Driven Pattern in microservices ?
+
+10. What is CQRS Pattern in microservices ?
+
+
+CQRS Pattern
+CQRS stands for Command Query Responsibility Segregation. As the name suggests, we split the application into two parts: 
+Command-Side and Query-Side. Now, one will ask, what do "command" and "query" mean?
+
+Commands change the state of the object or entity, also called modifiers or mutators.
+Queries return the state of the entity and do not change anything. Another term for them is "accessors."
+
+The CQRS pattern holds the idea that the method should either change the state of the entity, or return the result, but not both. Segregating models for the read and write sides reduces the complexity that comes with having a single view for both of them.
+
+Benefits of CQRS:
+
+Separate command and query models, resulting in simplified design and implementation of the system and overall reduction
+ of complexity.
+One can easily optimize the read side of the system separately from the write side, allowing scaling of each differently
+ as per the load on the side. For example, read datastores often encounter greater load, and hence can be scaled without
+ affecting the write datastores.
+You can provide multiple views of your data for querying purposes depending on the use cases.
+How CQRS Works
+CQRS is mainly used in conjunction with Event Sourcing. The write side model of the CQRS-based system handles the events 
+persistence, acting as a source of information for the read side. The read model of the system provides materialized views 
+of the data, typically as highly denormalized views.
+
+11. What is circuit breaker Pattern in microservices ? 
+
+12. What is components of circuit breaker Pattern in microservices ? 
+
+
+13. How to manage transactions in microservices Systems ? 
+
+14. How to Implement Spring Cloud config in microservices Systems ? 
+
+15. How to Implement Custom API Gateway in microservices Systems ? 
+
+16. How to handle error or fault tolerence in microservices Systems ? 
+
+17. How to Implement Custom Rate Limiter in microservices Systems? 
+
+18. How to Implement Matric,Monitoring Dashboard and Logging in microservices Systems? 
+
+
+19.  How to Implement Prometheus and Grafana in microservices Systems? 
+
+20.  How to Implement  circuit breaker Pattern for error handling  in microservices Systems? 
+
+21.  How to Implement  ELK Stack for logging  in microservices Systems? 
+
+22.  Why to use zipkin and  sleuth  in microservices Systems? 
+
+https://www.javainuse.com/spring/cloud-sleuth
+https://livebook.manning.com/book/exploring-microservice-development/2-chapter-9-distributed-tracing-with-spring-cloud-sleuth-and-zipkin/
+
+
+23.  How to Deploy new  microservice in microservices Systems? 
+
+
+
+
+
