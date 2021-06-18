@@ -1,0 +1,653 @@
+-----------------------------------------------------------------------------------------------------
+Java Backend related -Spring Framework, Springboot,REST API, Spring Cloud -Interview questions 10 years experiences Lead  developer
+Ref :
+https://www.vojtechruzicka.com/documenting-spring-boot-rest-api-swagger-springfox/
+
+https://github.com/OAI/OpenAPI-Specification/blob/main/versions/2.0.md
+https://www.restapitutorial.com/lessons/whatisrest.html#
+
+https://medium.com/javarevisited/21-spring-mvc-rest-interview-questions-answers-for-beginners-and-experienced-developers-21ad3d4c9b82
+
+
+
+-------------------------------------------------------------------------------------------------------
+1. What are difference between REST and SOAP ?
+
+2.What is Open API? 
+
+The OpenAPI Specification (OAS) defines a standard, language-agnostic interface to RESTful APIs 
+which allows both humans and computers to discover and understand the capabilities of the service
+without access to source code, documentation, or through network traffic inspection. When properly defined, 
+a consumer can understand and interact with the remote service with a minimal amount of implementation logic.
+
+An OpenAPI definition can then be used by documentation generation tools to display the API, 
+code generation tools to generate servers and clients in various programming languages, testing tools,
+and many other use cases.
+
+OpenAPI Document
+A document (or set of documents) that defines or describes an API. An OpenAPI definition uses and conforms to
+the OpenAPI Specification.
+
+An OpenAPI document that conforms to the OpenAPI Specification is itself a JSON object, 
+which may be represented either in JSON or YAML format.
+
+
+3.How to document your Spring Boot REST APIs using Swagger with SpringFox?
+
+Swagger™ is a project used to describe and document RESTful APIs.
+
+With Swagger UI it is possible to explore our REST API with a nice graphical user interface in our browser.
+Using Swagger makes documenting your RESTful services easy.
+
+Swagger 2 is an open-source project used to describe and document RESTful APIs. Swagger 2 is language-agnostic 
+and is extensible into new technologies and protocols beyond HTTP. The current version defines a set HTML, JavaScript,
+ and CSS assets to dynamically generate documentation from a Swagger-compliant API. 
+ These files are bundled by the Swagger UI project to display the API on the browser. 
+ Besides rendering documentation, Swagger UI allows other API developers or consumers to interact with the API’s
+ resources without having any of the implementation logic in place.
+
+The Swagger 2 specification, which is known as OpenAPI specification, has several implementations. 
+
+Currently, Springfox that has replaced Swagger-SpringMVC (Swagger 1.2 and older) is popular for Spring Boot applications.
+Springfox supports both Swagger 1.2 and 2.0.
+
+Adding Dependencies
+To work with SpringFox in your project, you need to add it as a dependency first. 
+If you are using Maven, you can use the following (you can check whether a newer version is available).
+
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger2</artifactId>
+    <version>2.9.2</version>
+</dependency>
+
+
+
+@Configuration
+@EnableSwagger2
+public class SpringFoxConfig {
+    @Bean
+    public Docket apiDocket() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .paths(PathSelectors.any())
+                .build();
+    }
+}
+
+
+Adding Swagger Core annotations to your controller classes
+Same as you could annotate your model classes with Swagger core annotations to provide additional metadata, 
+you can annotate your controllers and their methods and method parameters.
+
+@Api describes the whole controller
+@ApiOperation is used for description on a methods level
+@ApiParam is used for method parameters
+@RestController
+@RequestMapping("/v2/persons/")
+@Api(description = "Set of endpoints for Creating, Retrieving, Updating and Deleting of Persons.")
+public class PersonController {
+
+    private PersonService personService;
+
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    @ApiOperation("Returns list of all Persons in the system.")
+    public List getAllPersons() {
+        return personService.getAllPersons();
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/{id}", produces = "application/json")
+    @ApiOperation("Returns a specific person by their identifier. 404 if does not exist.")
+    public Person getPersonById(@ApiParam("Id of the person to be obtained. Cannot be empty.")
+                                    @PathVariable int id) {
+        return personService.getPersonById(id);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
+    @ApiOperation("Deletes a person from the system. 404 if the person's identifier is not found.")
+    public void deletePerson(@ApiParam("Id of the person to be deleted. Cannot be empty.")
+                                 @PathVariable int id) {
+        personService.deletePerson(id);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
+    @ApiOperation("Creates a new person.")
+    public Person createPerson(@ApiParam("Person information for a new person to be created.")
+                                   @RequestBody Person person) {
+        return personService.createPerson(person);
+    }
+
+    @Autowired
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
+    }
+}
+
+
+In addition to Sprinfox, we also require Swagger UI. The code to include Swagger UI is this.
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger-ui</artifactId>
+    <version>2.6.1</version>
+    <scope>compile</scope>
+</dependency>
+
+​4.What are diff between Post,put, patch and option REST Operation ?
+
+POST:
+The POST verb is most-often utilized to **create** new resources. In particular, it's used to create subordinate resources. 
+That is, subordinate to some other (e.g. parent) resource. In other words, when creating a new resource, 
+POST to the parent and the service takes care of associating the new resource with the parent, 
+assigning an ID (new resource URI), etc.
+
+On successful creation, return HTTP status 201, returning a Location header with a link to the newly-created resource with 
+the 201 HTTP status.
+
+POST is neither safe nor idempotent. It is therefore recommended for non-idempotent resource requests. 
+Making two identical POST requests will most-likely result in two resources containing the same information.
+
+
+
+
+Examples:
+
+POST http://www.example.com/customers
+POST http://www.example.com/customers/12345/orders
+
+
+PUT:
+PUT is most-often utilized for **update** capabilities, PUT-ing to a known resource URI with the request body containing
+ the newly-updated representation of the original resource.
+
+However, PUT can also be used to create a resource in the case where the resource ID is chosen by the client instead 
+of by the server. In other words, if the PUT is to a URI that contains the value of a non-existent resource ID. 
+Again, the request body contains a resource representation. Many feel this is convoluted and confusing. Consequently, 
+this method of creation should be used sparingly, if at all.
+
+Alternatively, use POST to create new resources and provide the client-defined ID in the body representation—presumably
+ to a URI that doesn't include the ID of the resource (see POST below).
+
+On successful update, return 200 (or 204 if not returning any content in the body) from a PUT. If using PUT for create,
+ return HTTP status 201 on successful creation. A body in the response is optional—providing one consumes more bandwidth.
+ It is not necessary to return a link via a Location header in the creation case since the client already set the resource ID.
+
+PUT is not a safe operation, in that it modifies (or creates) state on the server, but it is idempotent. 
+In other words, if you create or update a resource using PUT and then make that same call again, the resource is still 
+there and still has the same state as it did with the first call.
+
+If, for instance, calling PUT on a resource increments a counter within the resource, the call is no longer idempotent. 
+Sometimes that happens and it may be enough to document that the call is not idempotent. However, it's recommended to keep
+ PUT requests idempotent. It is strongly recommended to use POST for non-idempotent requests.
+
+Examples:
+
+PUT http://www.example.com/customers/12345
+PUT http://www.example.com/customers/12345/orders/98765
+PUT http://www.example.com/buckets/secret_stuff
+
+
+
+PATCH:
+PATCH is used for **modify** capabilities. The PATCH request only needs to contain the changes to the resource,
+ not the complete resource.
+
+This resembles PUT, but the body contains a set of instructions describing how a resource currently residing 
+on the server should be modified to produce a new version. This means that the PATCH body should not just be 
+a modified part of the resource, but in some kind of patch language like JSON Patch or XML Patch.
+
+PATCH is neither safe nor idempotent. However, a PATCH request can be issued in such a way as to be idempotent,
+ which also helps prevent bad outcomes from collisions between two PATCH requests on the same resource in 
+ a similar time frame. Collisions from multiple PATCH requests may be more dangerous than PUT collisions 
+ because some patch formats need to operate from a known base-point or else they will corrupt the resource. 
+ Clients using this kind of patch application should use a conditional request such that the request will fail 
+ if the resource has been updated since the client last accessed the resource. For example, the client can use 
+ a strong ETag in an If-Match header on the PATCH request.
+
+Examples:
+
+PATCH http://www.example.com/customers/12345
+PATCH http://www.example.com/customers/12345/orders/98765
+PATCH http://www.example.com/buckets/secret_stuff
+
+
+
+
+5.What are idempotent operations? Why is idempotency important in REST API?
+
+From a RESTful service standpoint, for an operation (or service call) to be idempotent, clients can make that 
+same call repeatedly while producing the same result. In other words, making multiple identical requests has the
+ same effect as making a single request. Note that while idempotent operations produce the same result on 
+ the server (no side effects), the response itself may not be the same (e.g. a resource's state may change between requests).
+
+ 
+There are some HTTP methods — like GET — that produce the same response no matter how many times you use them, 
+sending multiple GET request to the same URI will result in same response without any side-effect. 
+Hence, this is known as idempotent.
+On the other hand, the POST is not idempotent, because if you send multiple POST request, 
+it will result in multiple resource creation on the server, but, again, PUT is idempotent, 
+if you are using it to update the resource.
+Even multiple PUT requests can be used to update a resource on a server and will give the same end result. 
+You can take an HTTP Fundamentals course by Pluralsight to learn more about idempotent methods of the HTTP protocol
+and HTTP in general.
+
+
+The PUT and DELETE methods are defined to be idempotent. However, there is a caveat on DELETE. 
+The problem with DELETE, which if successful would normally return a 200 (OK) or 204 (No Content), 
+will often return a 404 (Not Found) on subsequent calls, unless the service is configured to "mark" resources
+ for deletion without actually deleting them. However, when the service actually deletes the resource, 
+ the next call will not find the resource to delete it and return a 404. However, the state on the server is the same 
+ after each DELETE call, but the response is different.
+
+GET, HEAD, OPTIONS and TRACE methods are defined as safe, meaning they are only intended for retrieving data.
+This makes them idempotent as well since multiple, identical requests will behave the same.
+
+
+6.When do you need @ResponseStatus annotation in Spring MVC?
+
+@ResponseStatus allows you to send custom HTTP status codes along with proper error message in case of an exception.
+In order to use it, you can create custom exceptions and annotate them using the @ResponseStatus annotation 
+and proper HTTP status code and reason.
+When such exceptions are thrown from the controller’s handler methods and not handled anywhere else, 
+then the appropriate HTTP response with the proper HTTP status code is sent to the client.
+
+
+
+7.How handle Exceptions in Spring boot?
+
+8.How logging using AOP in Spring boot?
+
+
+9. What does @RequestMapping annotation do?
+
+The @RequestMapping annotation is used to map web requests to Spring Controller methods. 
+You can map a request based upon HTTP methods, e.g. GET, POST, and various other parameters.
+
+@RequestMapping 
+(method = RequestMethod.POST, consumes="application/json")
+public Book save(@RequestBody Book aBook) {
+  return bookRepository.save(aBook);
+}
+
+10.When do you need @ResponseBody annotation in Spring MVC? 
+
+
+The @ResponseBody annotation can be put on a method to indicate that the return type should be written directly to 
+the HTTP response body (and not placed in a Model, or interpreted as a view name).
+For example:
+@RequestMapping(path = "/hello", method = RequestMethod.PUT)
+@ResponseBody
+public String helloWorld() {
+  return "Hello World";
+}
+Alternatively, you can also use the @RestController annotation instead of the @Controller annotation. 
+This will remove the need for using @ResponseBody because, as discussed in the previous answer, 
+it comes automatically with the @RestController annotation.
+
+11. What does @PathVariable do in Spring MVC? Why it’s useful in REST with Spring?
+his is one of the useful annotations from Spring MVC that allows you to read values from the URI, 
+like query parameter. It’s particularly useful in case of creating RESTful web service using Spring, because, 
+in REST, resource identifiers are part of the URI.
+
+12.What is the difference between @Controller and @RestController in Spring MVC? 
+
+
+but the most important one is that with the @RestController you get the @ResponseBody annotation automatically,
+which means you don't need to separately annotate your handler methods with the @ResponseBody annotation.
+
+
+13. Where do you need @EnableWebMVC?
+The @EnableWebMvc annotation is required to enable Spring MVC when Java configuration is used to configure Spring MVC 
+instead of XML. It is equivalent to <mvc: annotation-driven> in an XML configuration.
+It enables support for the @Controller-annotated classes that use @RequestMapping to map incoming requests to handler
+ methods that are not already familiar with Spring's support for Java configuration.
+
+ 
+
+14.What is an HttpMessageConverter in Spring REST?
+An HttpMessageConverter is a strategy interface that specifies a converter that can convert from and
+ to HTTP requests and responses. Spring REST uses this interface to convert HTTP responses to various formats, 
+ for example, JSON or XML.
+Each HttpMessageConverter implementation has one or several MIME Types associated with it. 
+Spring uses the "Accept" header to determine the content type that the client is expecting.
+
+15. How to support multiple Response format in REST API ?
+
+16. Can REST Conroller provide response content  format xml or json based on client request payload and if yes/no how?
+Yes using header value "Accept" as application/json or application/xml while client make request invoke.
+And in conroller adding producer={"application/json",application/xml}
+
+17. What is a resource?
+A resource is how data is represented in the REST architecture. By exposing entities as the resource, 
+it allows a client to read, write, modify, and create resources using HTTP methods,
+for example, GET, POST, PUT, DELETE, etc.
+
+
+18. Is REST normally stateless?
+Yes, REST API should be stateless, because it is based on HTTP, which is also stateless. A request in REST API should contain all the details required to process it.
+It should not rely on previous or next requests or some data maintained at the server end, like sessions.
+
+
+19.Is REST secure? What can you do to secure it? 
+REST is normally not secure, but you can secure it by using Spring Security. At the very least, 
+you can enable the HTTP basic authentication by using HTTP in your Spring Security configuration file.
+ Similarly, you can expose your REST API using HTTPS, if the underlying server supports HTTPS.
+
+20.What is Spring Boot? Why should you use it? How it is diff from spring framework ?
+
+21.What are some important features of using Spring Boot?
+Starter dependency,Auto-Configuration,Spring Initializer,Spring Actuator,Spring CLI
+
+22.What is auto-configuration in Spring boot? how does it help? Why Spring Boot is called opinionated?
+
+23.What is starter dependency in Spring Boot? how does it help?
+
+24.What is the difference between @SpringBootApplication and @EnableAutoConfiguration annotation?
+
+25.How to disable a specific auto-configuration class?
+You can use exclude attribute of @EnableAutoConfiguration if you want auto-configuration not to apply to any specific class.
+
+//use of exclude
+@EnableAutoConfiguration(exclude={className})
+
+26.What is the difference between RequestMapping and GetMapping?
+
+27.What is the use of Profiles in spring boot?
+
+28.What is Spring Actuator? What are its advantages?How to enable Actuator in Spring boot application?
+
+
+Actuators provide below pre-defined endpoints to monitor our application -:
+
+Health
+Info
+Beans
+Mappings
+Configprops
+Httptrace
+Heapdump
+Threaddump
+Shutdown
+
+
+To enable the spring actuator feature, we need to add the dependency of “spring-boot-starter-actuator” in pom.xml.
+
+<dependency>
+<groupId> org.springframework.boot</groupId>
+<artifactId> spring-boot-starter-actuator </artifactId>
+</dependency>
+
+
+29.How to get the list of all the beans in your Spring boot application?
+Spring Boot actuator “/Beans” is used to get the list of all the spring beans in your application.
+
+30.What is dependency Injection? How it's diff with IOC container?
+
+31.What is Spring Initializer? why should you use it?
+
+32 Can you control logging with Spring Boot? How?
+Yes, we can control logging with Spring Boot by specifying log levels on application.properties file. Spring Boot loads this file when it exists in the classpath and it can be used to configure both Spring Boot and application code.
+
+Spring Boot uses Commons Logging for all internal logging and you can change log levels by adding following lines in the application.properties file:
+
+logging.level.org.springframework=DEBUG
+logging.level.com.demo=INFO
+
+
+33. How Spring MVC works ?
+
+34. How Spring Web Security works ? How to configure custom filter in Security chain?
+
+35. How to Deploy Spring Boot Applications on External Tomcat Server?
+
+--1.
+pom.xml:changes -Instruct spring boot not to use the inbuilt Tomcat server 
+<dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        
+        <!-- Instruct spring boot not to use the inbuilt Tomcat server -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+		
+		or 
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		
+    </dependencies>
+	
+
+<!-- packaging to WAR -->
+<packaging>war</packaging>
+
+
+--2.
+Extend main Class with SpringBootServletInitializer:
+modify the Spring BootStrap class which extends the SpringBootServletInitializer class to 
+initialize the Servlet context required by Tomcat.
+
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
+
+@SpringBootApplication
+public class SpringBootApp extends SpringBootServletInitializer {
+
+ @Override
+ protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+  return application.sources(SpringBootApp.class);
+ }
+
+ public static void main(String[] args) {
+  SpringApplication.run(SpringBootApp.class, args);
+ }
+}
+
+application.properties:
+
+server.contextPath=/springbootapp
+
+next :Deploy the Spring Boot application on external new  Tomcat server downloaded.
+
+36.What are diff between spring  applicationcontext and beanfactory?
+
+37. Suppose A bean is singleton and B bean is prototype. A bean member B  bean so what behaviour 
+of Bean B if bean A created for given request in spring ?
+behaviour of Bean B will be as singleton as Owner Bean A has singleton scope.
+
+38. What are bean life cycle hooks in spring ?
+
+39. What are diff between Filter and interceptor ? How to implement interceptor in spring MVC ?
+
+HandlerInterceptor is basically similar to a Servlet 2.5 Filter, but it just allows custom pre-processing with 
+the option of prohibiting the execution of the Handler itself, and custom post-processing. 
+
+Filters allow for exchanging the request and response objects that are passed to the chain. 
+It means Filters work more in the request/response domain while HandlerInterceptors are spring bean and can access 
+other beans in the application. 
+Note that a Filter gets configured in web.xml, a HandlerInterceptor in the application context.
+
+
+
+
+In Spring, when a request is sent to spring controller, it will have to pass through Interceptors.
+
+Spring Interceptor is a concept that is rather similar to Servlet Filter.
+
+Spring Interceptor is only applied to requests that are sending to a Controller.
+
+
+
+Your Interceptor must implement org.springframework.web.servlet.HandlerInterceptor interface 
+or extended from  org.springframework.web.servlet.handler.HandlerInterceptorAdapter class.
+
+This interface defines three methods:
+
+preHandle is called before the actual handler is executed.
+postHandle is called after the handler is executed.
+afterCompletion is called after the complete request has finished.
+
+
+--->:
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+ 
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+ 
+public class AuthInterceptor extends HandlerInterceptorAdapter {
+ 
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
+        long startTime = System.currentTimeMillis();
+        System.out.println("\n-------- LogInterception.preHandle --- ");
+        System.out.println("Request URL: " + request.getRequestURL());
+        System.out.println("Start Time: " + System.currentTimeMillis());
+ 
+        request.setAttribute("startTime", startTime);
+          
+        return true;
+    }
+ 
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+            ModelAndView modelAndView) throws Exception {
+        System.out.println("\n-------- LogInterception.postHandle --- ");
+        System.out.println("Request URL: " + request.getRequestURL());
+ 
+        // You can add attributes in the modelAndView
+        // and use that in the view page
+    }
+ 
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+            throws Exception {
+        System.out.println("\n-------- LogInterception.afterCompletion --- ");
+ 
+        long startTime = (Long) request.getAttribute("startTime");
+        long endTime = System.currentTimeMillis();
+        System.out.println("Request URL: " + request.getRequestURL());
+        System.out.println("End Time: " + endTime);
+ 
+        System.out.println("Time Taken: " + (endTime - startTime));
+    }
+ 
+}
+
+The interceptor must be configured in the mvc-dispatcher-servlet.xml. 
+We can use mvc:interceptors element to wire all the interceptors. 
+We can also provide URI pattern to match before including the interceptor for the request through mapping element.
+
+mvc-dispatcher-servlet.xml:
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
+ 
+    <context:component-scan base-package="com.springapp.mvc"/>
+ 
+    <mvc:interceptors>
+            <bean class="com.springapp.mvc.AuthInterceptor" />
+    </mvc:interceptors>
+ 
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+ 
+</beans>
+
+
+Java Configuration of Interceptor:
+Interceptors can be also configured in java. See the below example of java configuration of interceptors 
+(The following code is not available in the downloaded source code):
+
+
+
+@Configuration
+@EnableWebMvc
+public class WebConfig extends WebMvcConfigurerAdapter {
+ 
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new AuthInterceptor()).addPathPatterns("/**").excludePathPatterns("/admin/**");
+        registry.addInterceptor(new SecurityInterceptor()).addPathPatterns("/secure/*");
+    }
+ 
+}
+
+40.What is Dependency Injection?What are  Types of Spring Dependency Injection?
+There are three types of Spring Dependency Injection. 
+We can implement dependency injection with:
+constructor-based injection,
+setter-based injection, or
+field-based injection.
+
+
+
+
+Setter Dependency Injection (SDI):
+Poor readability as it adds a lot of boiler plate codes in the application.
+The bean must include getter and setter methods for the properties.
+
+Requires addition of @Autowired annotation, above the setter in the code and hence,
+ it increases the coupling between the class and the DI container.
+
+Circular dependencies or partial dependencies result with Setter DI because object creation happens before the injections.
+Preferred option when properties are less and mutable objects can be created.
+
+
+
+In setter-based injection, we provide the required dependencies as field parameters to the class
+ and the values are set using the setter methods of the properties. 
+ We have to annotate the setter method with the @Autowired annotation.
+
+
+Field Injection:
+With field-based injection, Spring assigns the required dependencies directly to 
+the fields on annotating with @Autowired annotation.
+
+
+Constructor Dependency Injection:
+Good readability as it is separately present in the code.
+
+The bean class must declare a matching constructor with arguments. Otherwise, BeanCreationException will be thrown.
+
+Before Spring 4.3, we had to add an @Autowired annotation to the constructor.
+With newer versions, this is optional if the class has only one constructor.
+
+Best in the case of loose coupling with the DI container as it is not even required to 
+add @Autowired annotation in the code.
+(Implicit constructor injections for single constructor scenarios after spring 4.0)
+
+No scope for circular or partial dependency because dependencies are resolved before object creation itself.
+
+Preferred option when properties on the bean are more and immutable objects (eg: financial processes) are important for application.
+
+
+
+40.What are Setter Injection & Constructor Injection ? which one better?
+ 
+Setter Injection: the setter methods are annotated with @Autowired. 
+Constructor Injection:the setter methods are annotated with @Autowired. 

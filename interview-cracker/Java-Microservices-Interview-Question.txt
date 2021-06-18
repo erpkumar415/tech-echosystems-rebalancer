@@ -122,6 +122,19 @@ https://livebook.manning.com/book/exploring-microservice-development/2-chapter-9
 
 23.  How to Deploy new  microservice in microservices Systems? 
 
+24.  What are Deployment Strategies for new microservices Systems on productions? 
+
+25.  How migrate monolith productions application to microservices systems? 
+
+26. How to Authenticaton systems microservices using JWT?
+
+27. What is Spring Cloud Discovery service ? How to registor any microservice to Discovery service?
+
+
+
+
+
+
 
 
 
